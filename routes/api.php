@@ -82,6 +82,12 @@ Route::prefix('auth')->group(function() {
         Route::post('verify', [LoginController::class, 'verify']);
     });
 });
+*/
+Route::prefix('talent-pool')->middleware(['auth:sanctum', 'can: access-talent'])->group(function() {
+    Route::get('experiences', [TalentPoolController::class, 'getExperienceById']);
+});
+
+
 
 Route::prefix('user')->middleware('auth:sanctum')->group(function() {
     Route::get('{user}', [UserController::class, 'show']);
