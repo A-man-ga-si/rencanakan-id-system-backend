@@ -17,6 +17,9 @@ services:
       DB_DATABASE: laravel
       DB_USERNAME: laravel
       DB_PASSWORD: secret
+      APP_DEBUG: true
+      SANCTUM_STATEFUL_DOMAINS: localhost:8000
+      APP_URL: http://localhost:8000
     ports:
       - "8000:8000"
     command: >

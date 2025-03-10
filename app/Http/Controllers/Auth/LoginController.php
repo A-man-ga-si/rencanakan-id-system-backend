@@ -16,6 +16,7 @@ class LoginController extends Controller
 {
     public function login(LoginRequest $request)
     {
+        echo "Login Controller";
         $credentials = $request->only(['email', 'password']);
         if (!Auth::attempt($credentials)) {
             return response()->json([

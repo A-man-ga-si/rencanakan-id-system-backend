@@ -58,6 +58,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::prefix('order')->group(function() {
+
     Route::post('notify', [OrderController::class, 'notify']);
 
     Route::middleware('auth:sanctum')->group(function() {
@@ -83,7 +84,7 @@ Route::prefix('auth')->group(function() {
         Route::post('verify', [LoginController::class, 'verify']);
     });
 });
-*/
+
 Route::prefix('talent-pool')->middleware(['auth:sanctum', 'can: access-talent'])->group(function() {
     Route::get('experiences', [TalentPoolController::class, 'getExperienceById']);
 });

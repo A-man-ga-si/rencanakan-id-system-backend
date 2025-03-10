@@ -38,6 +38,7 @@ class OrderController extends Controller
 
     public function notify(Request $request)
     {
+        echo "Notify";
         Log::info('Incoming payment notification at ' . Carbon::now()->format('Y-m-d H:i:s'));
 
         if (!$request->has('order_id')) {
