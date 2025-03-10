@@ -1,13 +1,13 @@
-# Gunakan official image PHP dengan ekstensi yang diperlukan
-FROM php:8.2-fpm
+# Gunakan official PHP image
+FROM php:8.2-cli
 
-# Set working directory di dalam container
+# Set working directory
 WORKDIR /var/www
 
 # Install dependencies
 RUN apt-get update && apt-get install -y \
-    zip unzip curl libpng-dev libonig-dev libxml2-dev libzip-dev \
-    && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd zip
+    zip unzip curl libpng-dev libonig-dev libxml2-dev \
+    && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -15,17 +15,14 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Copy project Laravel ke dalam container
 COPY . .
 
-# Berikan permission agar storage dan cache bisa diakses
+# Berikan permission agar storage bisa diakses
 RUN chmod -R 777 storage bootstrap/cache
 
-# Jalankan perintah untuk menginstal dependensi Laravel
+# Install dependencies Laravel
 RUN composer install --no-dev --optimize-autoloader
 
-# Ubah user ke www-data agar lebih aman
-RUN chown -R www-data:www-data /var/www
-USER www-data
+# Expose port Laravel
+EXPOSE 8000
 
-# Expose port yang digunakan
-EXPOSE 9000
-
-CMD ["php-fpm"]
+# Jalankan Laravel
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
