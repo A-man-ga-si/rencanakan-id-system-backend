@@ -31,6 +31,23 @@ class RegisterController extends Controller
             ]);
         }
     }
+
+    public function registerTalent(RegisterRequest $request) {
+        $this->removeUnverifiedUser($request);
+        try {
+            $user = $this->createTalentAccount($request);
+            return response()->json([
+                'status' => 'success',
+                'data' => compact('user')
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+                'traces' => $e->getTrace(),
+            ]);
+        }
+    }
   
     public function confirmEmail($token)
     {
@@ -84,6 +101,19 @@ class RegisterController extends Controller
         ]);
         $user = User::create($request->only(['first_name', 'last_name', 'email', 'password', 'job', 'phone', 'demo_quota']));
         $user->assignRole('owner');
+        if (!app()->environment('local')) {
+            $this->sendVerificationMail($user);
+        }
+        return $user;
+    }
+
+    private function createTalentAccount(RegisterRequest $request) {
+        $request->merge([
+            'password' => Hash::make($request->password),
+            'demo_quota' => 1
+        ]);
+        $user = User::create($request->only(['first_name', 'last_name', 'email', 'password', 'job', 'phone', 'demo_quota']));
+        $user->assignRole('talent');
         if (!app()->environment('local')) {
             $this->sendVerificationMail($user);
         }

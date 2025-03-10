@@ -70,6 +70,7 @@ Route::prefix('auth')->group(function() {
 
     Route::post('login', [LoginController::class, 'login']);
     Route::post('register', [RegisterController::class, 'register']);
+    Route::post('register-talent', [RegisterController::class, 'registerTalent']);
     Route::post('forgot-password', [ForgotPasswordController::class, 'sendConfirmationMail']);
 
     Route::prefix('reset-password')->group(function() {
