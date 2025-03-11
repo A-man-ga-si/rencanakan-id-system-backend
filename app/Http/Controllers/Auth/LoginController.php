@@ -27,14 +27,48 @@ class LoginController extends Controller
         $user = Auth::user();
         
         // Check Email Verification Status
-        if (is_null($user ->email_verified_at)) {
-            $this->sendVerificationMail(Auth::user());
-            Auth::logout();
+        // if (is_null($user ->email_verified_at)) {
+        //     $this->sendVerificationMail(Auth::user());
+        //     Auth::logout();
+        //     return response()->json([
+        //         'status' => 'fail',
+        //         'message' => 'Email anda belum diverifikasi. Instruksi verifikasi telah dikirim ke alamat email Anda. Silakan cek dan ikuti petunjuknya untuk menyelesaikan verifikasi.'
+        //     ], 401);
+        // }
+
+        $user->update(['last_login' => now()]);
+        $user->getAllPermissions();
+        $token = $user->createToken('auth');
+
+        // Populate company data
+        $user->company;
+
+        return response()->json([
+            'status' => 'success',
+            'data' => compact('user', 'token')
+        ]);
+    }
+    public function loginTalent(LoginRequest $request)
+    {
+        $credentials = $request->only(['email', 'password']);
+        if (!Auth::attempt($credentials)) {
             return response()->json([
                 'status' => 'fail',
-                'message' => 'Email anda belum diverifikasi. Instruksi verifikasi telah dikirim ke alamat email Anda. Silakan cek dan ikuti petunjuknya untuk menyelesaikan verifikasi.'
+                'message' => 'The credentials is wrong'
             ], 401);
         }
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        
+        // // Check Email Verification Status
+        // if (is_null($user ->email_verified_at)) {
+        //     $this->sendVerificationMail(Auth::user());
+        //     Auth::logout();
+        //     return response()->json([
+        //         'status' => 'fail',
+        //         'message' => 'Email anda belum diverifikasi. Instruksi verifikasi telah dikirim ke alamat email Anda. Silakan cek dan ikuti petunjuknya untuk menyelesaikan verifikasi.'
+        //     ], 401);
+        // }
 
         $user->update(['last_login' => now()]);
         $user->getAllPermissions();
