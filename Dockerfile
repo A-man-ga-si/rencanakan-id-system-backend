@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y \
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Copy project Laravel ke dalam container
-COPY . .
+COPY . /var/www/
 
 # Berikan permission agar storage bisa diakses
 RUN chmod -R 777 storage bootstrap/cache
